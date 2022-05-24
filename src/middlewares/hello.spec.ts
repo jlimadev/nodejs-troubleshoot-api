@@ -1,44 +1,41 @@
-import { helloMiddleware } from "./hello"
-import { Response, Request } from "express"
-describe("helloMiddleware", () => {
+import { Request, Response } from 'express';
+import { helloMiddleware } from './hello';
+describe('helloMiddleware', () => {
+  const makeSut = () => {
+    const mockRequest = {
+      query: {},
+    } as unknown as Request;
 
-    const makeSut = () => {
+    const mockResponse = {
+      send: jest.fn(),
+    } as unknown as Response<any, Record<string, any>>;
 
-        const mockRequest = {
-            query: {}
-        } as unknown as Request
+    return {
+      sut: helloMiddleware,
+      response: mockResponse,
+      request: mockRequest,
+    };
+  };
+  it('returns stranger if no name is specified', () => {
+    // Given
+    const { sut, request, response } = makeSut();
+    // When
+    sut(request, response);
+    // Then
+    expect(response.send).toHaveBeenCalledWith({
+      message: `Hello Stranger`,
+    });
+  });
 
-        const mockResponse = {
-            send: jest.fn()
-        } as unknown as Response<any, Record<string, any>>
-
-        return {
-            sut: helloMiddleware,
-            response: mockResponse,
-            request: mockRequest
-        }
-
-    }
-    it("returns stranger if no name is specified", () => {
-        // Given
-        const { sut, request, response } = makeSut()
-        // When
-        sut(request, response)
-        // Then
-        expect(response.send).toHaveBeenCalledWith({
-            message: `Hello Stranger`
-        })
-    })
-
-    it("returns specific name if name is specified", () => {
-        // Given
-        const { sut, request, response } = makeSut()
-        request.query = { name: "Joselito" }
-        // When
-        sut(request, response)
-        // Then
-        expect(response.send).toHaveBeenCalledWith({
-            message: `Hello World. I'm Joselito`
-        })
-    })
-})
+  it('returns specific name if name is specified', () => {
+    // Given
+    const { sut, request, response } = makeSut();
+    request.query = { name: 'Joselito' };
+    // When
+    sut(request, response);
+    // Then
+    expect(response.send).toHaveBeenCalledWith({
+      message: `Hello World. I'm Joselito`,
+    });
+  });
+});
