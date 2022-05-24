@@ -16,13 +16,12 @@ jobs:
 
       - name: Test
         run: npm ci && npm test
-  
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     needs: test
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -30,9 +29,9 @@ jobs:
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
         with:
           email: ${{ secrets.HEROKU_EMAIL }}
-          heroku_api_key: "123"
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           dockerfile_directory: ./
           dockerfile_name: Dockerfile
-          docker_options: "--no-cache"
+          docker_options: '--no-cache'
           process_type: web
